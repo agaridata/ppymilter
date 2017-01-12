@@ -100,7 +100,7 @@ class AsyncPpyMilterServer(asyncore.dispatcher):
       if connaddr is None:
         return
       (conn, addr) = connaddr
-    except socket.error, e:
+    except socket.error as e:
       logger.error('warning: server accept() threw an exception ("%s")',
                         str(e))
       return
@@ -181,7 +181,7 @@ class AsyncPpyMilterServer(asyncore.dispatcher):
         # rinse and repeat :)
         self.found_terminator = self.read_packetlen
         self.set_terminator(MILTER_LEN_BYTES)
-      except ppymilterbase.PpyMilterCloseConnection, e:
+      except ppymilterbase.PpyMilterCloseConnection as e:
         logger.info('Closing connection ("%s")', str(e))
         self.close()
 
@@ -237,7 +237,7 @@ class ThreadedPpyMilterServer(SocketServer.ThreadingTCPServer):
                 self.__send_response(r)
             elif response:
               self.__send_response(response)
-          except ppymilterbase.PpyMilterCloseConnection, e:
+          except ppymilterbase.PpyMilterCloseConnection as e:
             logger.info('Closing connection ("%s")', str(e))
             break
       except Exception:
