@@ -47,12 +47,16 @@ import binascii
 import logging
 import os
 import socket
-import SocketServer
 import struct
 import sys
 import time
 
-import ppymilterbase
+if sys.version_info[0] == 2:
+    import SocketServer
+else:
+    import socketserver as SocketServer
+
+from . import ppymilterbase
 
 logger = logging.getLogger('ppymilter')
 
