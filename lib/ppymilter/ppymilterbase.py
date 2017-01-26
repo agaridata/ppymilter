@@ -124,8 +124,8 @@ def CanonicalizeAddress(addr):
     The addr with leading and trailing angle brackets removed unless
     the address is "<>" (in which case the string is returned unchanged).
   """
-  if addr == '<>': return addr
-  return addr.lstrip('<').rstrip('>')
+  if addr == b'<>': return addr
+  return addr.lstrip(b'<').rstrip(b'>')
 
 
 class PpyMilterException(Exception):
@@ -190,7 +190,8 @@ class PpyMilterDispatcher(object):
       PpyMilterCloseConnection: Indicating the (milter) connection should
                                 be closed.
     """
-    (cmd, data) = (data[0], data[1:])
+    cmd = chr(data[0])
+    data = data[1:]
     try:
       if cmd not in COMMANDS:
         logger.warn('Unknown command code: "%s" ("%s")', cmd, data)
@@ -259,7 +260,7 @@ class PpyMilterDispatcher(object):
         data: A list of strings alternating between name, value of macro.
     """
     (macro, data) = (data[0], data[1:])
-    return (cmd, macro, data.split('\0'))
+    return (cmd, macro, data.split(b'\0'))
 
   def _ParseConnect(self, cmd, data):
     """Parse the 'Connect' milter data into arguments for the milter handler.
@@ -309,8 +310,8 @@ class PpyMilterDispatcher(object):
         mailfrom: The canonicalized MAIL From email address.
         esmtp_info: Extended SMTP (esmtp) info as a list of strings.
     """
-    (mailfrom, esmtp_info) = data.split('\0', 1)
-    return (cmd, CanonicalizeAddress(mailfrom), esmtp_info.split('\0'))
+    (mailfrom, esmtp_info) = data.split(b'\0', 1)
+    return (cmd, CanonicalizeAddress(mailfrom), esmtp_info.split(b'\0'))
 
   def _ParseRcptTo(self, cmd, data):
     """Parse the 'RcptTo' milter data into arguments for the milter handler.
@@ -325,8 +326,8 @@ class PpyMilterDispatcher(object):
         rcptto: The canonicalized RCPT To email address.
         esmtp_info: Extended SMTP (esmtp) info as a list of strings.
     """
-    (rcptto, esmtp_info) = data.split('\0', 1)
-    return (cmd, CanonicalizeAddress(rcptto), esmtp_info.split('\0'))
+    (rcptto, esmtp_info) = data.split(b'\0', 1)
+    return (cmd, CanonicalizeAddress(rcptto), esmtp_info.split(b'\0'))
 
   def _ParseHeader(self, cmd, data):
     """Parse the 'Header' milter data into arguments for the milter handler.
@@ -341,8 +342,8 @@ class PpyMilterDispatcher(object):
         key: The name of the header.
         val: The value/data for the header.
     """
-    (key, val) = data.split('\0', 1)
-    val, _ = val.split('\0', 1)
+    (key, val) = data.split(b'\0', 1)
+    val, _ = val.split(b'\0', 1)
     return (cmd, key, val)
 
   def _ParseEndHeaders(self, cmd, data):
@@ -595,7 +596,7 @@ class PpyMilter(object):
     out = struct.pack('!III', MILTER_VERSION,
                       self.__actions & actions,
                       self.__protocol & protocol)
-    return cmd+out
+    return cmd.encode()+out
 
   def OnMacro(self, cmd, macro_cmd, data):
     """Callback for the 'Macro' milter command: no response required."""

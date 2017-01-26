@@ -165,7 +165,7 @@ class AsyncPpyMilterServer(asyncore.dispatcher):
       """
       if isinstance(response, str):
           response = response.encode()
-      logger.debug('  >>> %s', binascii.b2a_qp(response[0]))
+      logger.debug('  >>> %s', binascii.b2a_qp(chr(response[0]).encode()))
       self.push(struct.pack('!I', len(response)))
       self.push(response)
 
