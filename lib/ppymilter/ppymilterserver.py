@@ -152,7 +152,7 @@ class AsyncPpyMilterServer(asyncore.dispatcher):
     def read_packetlen(self):
       """Callback from asynchat once we have an integer accumulated in our
       input buffer (the milter packet length)."""
-      packetlen = int(struct.unpack('!I', "".join(self.__input))[0])
+      packetlen = int(struct.unpack('!I', b"".join(self.__input))[0])
       self.__input = []
       self.set_terminator(packetlen)
       self.found_terminator = self.read_milter_data
@@ -171,7 +171,7 @@ class AsyncPpyMilterServer(asyncore.dispatcher):
       """Callback from asynchat once we have read the milter packet length
       worth of bytes on the socket and it is accumulated in our input buffer
       (which is the milter command + data to send to the dispatcher)."""
-      inbuff = "".join(self.__input)
+      inbuff = b"".join(self.__input)
       self.__input = []
       logger.debug('  <<< %s', binascii.b2a_qp(inbuff))
       try:
@@ -232,7 +232,7 @@ class ThreadedPpyMilterServer(SocketServer.ThreadingTCPServer):
             partial_data = self.request.recv(packetlen - read)
             inbuf.append(partial_data)
             read += len(partial_data)
-          data = "".join(inbuf)
+          data = b"".join(inbuf)
           logger.debug('  <<< %s', binascii.b2a_qp(data))
           try:
             response = self.__milter_dispatcher.Dispatch(data)
