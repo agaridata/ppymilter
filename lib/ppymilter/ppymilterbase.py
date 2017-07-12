@@ -277,8 +277,8 @@ class PpyMilterDispatcher(object):
         port: The network port if appropriate for the connection.
         address: Remote address of the connection (e.g. IP address).
     """
-    (hostname, data) = data.split('\0', 1)
-    family = struct.unpack('c', data[0])[0]
+    (hostname, data) = data.split(b'\0', 1)
+    family = struct.unpack('c', data[0:1])[0]
     port = struct.unpack('!H', data[1:3])[0]
     address = data[3:]
     return (cmd, hostname, family, port, address)
