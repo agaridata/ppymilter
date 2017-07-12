@@ -280,7 +280,8 @@ class PpyMilterDispatcher(object):
     (hostname, data) = data.split(b'\0', 1)
     family = struct.unpack('c', data[0:1])[0]
     port = struct.unpack('!H', data[1:3])[0]
-    address = data[3:]
+    address = data[3:].decode()
+    hostname = hostname.decode()
     return (cmd, hostname, family, port, address)
 
   def _ParseHelo(self, cmd, data):
