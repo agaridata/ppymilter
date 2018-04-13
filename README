@@ -30,3 +30,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================
+
+
+Publishing for Internal Use (i.e. an internal package repository)
+===========================
+
+* Make source dist 
+python setup.py sdist --formats=gztar
+
+* Copy dist/ppymilter-<version>.tar.gz to your package repository
